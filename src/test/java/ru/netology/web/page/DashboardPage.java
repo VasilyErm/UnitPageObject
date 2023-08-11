@@ -1,22 +1,39 @@
 package ru.netology.web.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.val;
+import ru.netology.web.data.DataHelper;
 
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class DashboardPage {
+    private ElementsCollection cards = $$(".list__item div");
+    private final String balanceStart = "баланс: ";
+    private final String balanceFinish = " р.";
     private SelenideElement header = $("[data-test-id=dashboard]");
 
-    public DashboardPage(){
+    public DashboardPage() {
         header.should(visible);
     }
-    private ElementsCollection cards = $$(".list__item");
-    public int getFirstCardBalance() {
-        val text = cards.first().text();   //text: "**** **** **** 0001, баланс: 10000 р. \nПополнить
-        return 0;
+
+    public int getCardBalance(DataHelper.CardInfo cardInfo) {
+        var text = cards.findBy(Condition.text(cardInfo.getCardNumber().substring(15))).getText();
+        return extractBalance(text);
+    }
+
+    public TransferPage selectCardToTransfer(DataHelper.CardInfo cardInfo){
+    cards.findBy(attribute("data-test-id", cardInfo.getTestID())).$(".button__text").click();
+    return new TransferPage();
+    }
+    private int extractBalance(String text) {
+        val start = text.indexOf(balanceStart);
+        val finish = text.indexOf(balanceFinish);
+        val value = text.substring(start + balanceStart.length(), finish);
+        return Integer.parseInt(value);
     }
 }
