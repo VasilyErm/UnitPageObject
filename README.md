@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/qunlcmikywarpw33?svg=true)](https://ci.appveyor.com/project/VasilyErm/unitpageobject)
