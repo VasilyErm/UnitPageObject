@@ -14,7 +14,7 @@ public class TransferPage {
     private final SelenideElement transferButton = $("[data-test-id='action-transfer']");
     private final SelenideElement amountInput = $("[data-test-id='amount'] input");
     private final SelenideElement fromInput = $("[data-test-id='from'] input");
-    private final SelenideElement errorNotification = $("[data-test-id='error-notification']").should(Condition.text("Произошла ошибка"));
+    private final SelenideElement errorNotification = $("[data-test-id='error-notification'] .notification__title");
 
     public TransferPage() {
         transferHeader.shouldBe(visible);
@@ -32,7 +32,7 @@ public class TransferPage {
     }
 
     public void findErrorNotification(String expectedText) {
-        errorNotification.should(exactText(expectedText), Duration.ofSeconds(15)).should(visible);
+        errorNotification.should(exactText(expectedText), Duration.ofSeconds(10)).should(visible);
     }
 }
 

@@ -39,7 +39,7 @@ public class MoneyTransferTest {
     }
 
     @Test
-    void error() {
+    void errorWhenTransferToFirstCardInvalid() {
         var firstCardInfo = getFirstCardInfo();
         var secondCardInfo = getSecondCardInfo();
         var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
@@ -52,5 +52,27 @@ public class MoneyTransferTest {
         var actualSecondCardBalance = dashboardPage.getCardBalance(secondCardInfo);
         assertEquals(firstCardBalance, actualFirstCardBalance);
         assertEquals(secondCardBalance, actualSecondCardBalance);
+    }
+
+    @Test
+    void errorWhenAmountZero() {
+        var firstCardInfo = getFirstCardInfo();
+        var secondCardInfo = getSecondCardInfo();
+        var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
+        var secondCardBalance = dashboardPage.getCardBalance(secondCardInfo);
+        var amount = zeroAmount(secondCardBalance);
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
+        transferPage.findErrorNotification("Ошибка");
+    }
+
+    @Test
+    void errorWhenCardNotRegistered() {
+        var firstCardInfo = getFirstCardInfo();
+        var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
+        var amount = generateValidAmount(firstCardBalance);
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        transferPage.makeTransfer(String.valueOf(amount), notRegisteredCard());
+        transferPage.findErrorNotification("Ошибка");
     }
 }
